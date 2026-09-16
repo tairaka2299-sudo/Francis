@@ -251,12 +251,21 @@ button { font: inherit; color: inherit; background: none; border: 0; }
     linear-gradient(160deg, #eafaf4 0%, #e3f4fb 55%, #eef9f6 100%);
 }
 #dustCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.room-frame { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .cursor-bot {
   position: absolute; width: 40px; height: 40px; top: 0; left: 0;
   transform: translate(-100px, -100px);
   pointer-events: none; filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.25));
 }
 .demo-hint { margin-top: 14px; color: var(--text-faint); font-size: 0.85rem; }
+
+/* ===== Beautiful-at-home section ===== */
+.beautiful-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
+.beautiful-visual { display: flex; justify-content: center; }
+.beautiful-card { padding: 14px; width: 100%; max-width: 480px; overflow: hidden; }
+.beautiful-copy h2 { margin-bottom: 14px; }
+.beautiful-copy p { color: var(--text-muted); max-width: 46ch; }
+.callout-label { font-size: 12px; fill: var(--text-muted); font-family: "Rubik", sans-serif; }
 
 /* ===== Components ===== */
 .components-grid {
@@ -271,6 +280,21 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 .component-icon svg { width: 24px; height: 24px; }
 .component-card h3 { font-size: 1.08rem; font-weight: 700; margin-bottom: 10px; }
 .component-card p { color: var(--text-muted); font-size: 0.94rem; }
+
+/* ===== Suction game ===== */
+.suction-shell { padding: 22px; }
+.suction-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px; margin-bottom: 18px;
+}
+.suction-stage {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md); overflow: hidden;
+  border: 1px solid var(--border);
+  background: linear-gradient(160deg, #eafaf4 0%, #e3f4fb 55%, #eef9f6 100%);
+  cursor: pointer; touch-action: manipulation;
+}
+#suctionCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 
 /* ===== 360 view ===== */
 .view360-grid {
@@ -340,6 +364,7 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 }
 .final-cta h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 10px; }
 .final-cta p { color: var(--text-muted); }
+.final-cta-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
 /* ===== Footer ===== */
 .site-footer { border-top: 1px solid var(--border); padding-block: 40px; margin-top: 40px; }
@@ -363,6 +388,8 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 @media (max-width: 1024px) {
   .hero-inner { grid-template-columns: 1fr; }
   .hero-visual { max-width: 380px; margin-inline: auto; }
+  .beautiful-grid { grid-template-columns: 1fr; }
+  .beautiful-card { max-width: 420px; margin-inline: auto; }
   .components-grid { grid-template-columns: repeat(2, 1fr); }
   .videos-grid { grid-template-columns: repeat(2, 1fr); }
   .view360-grid { grid-template-columns: 1fr; }
@@ -375,7 +402,6 @@ button { font: inherit; color: inherit; background: none; border: 0; }
   .main-nav ul { flex-direction: column; align-items: flex-start; gap: 4px; }
   .main-nav a { display: block; padding: 12px 4px; width: 100%; }
   .nav-toggle { display: inline-flex; }
-  .header-actions .btn-primary { display: none; }
   .components-grid, .videos-grid, .specs-grid { grid-template-columns: 1fr; }
   .final-cta { flex-direction: column; align-items: flex-start; }
 }

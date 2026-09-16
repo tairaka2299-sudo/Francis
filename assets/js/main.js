@@ -373,6 +373,181 @@
     setAngle(0);
   })();
 
+  /* ===== Suction game ===== */
+  (function initSuctionGame() {
+    const stage = document.getElementById("suctionStage");
+    const canvas = document.getElementById("suctionCanvas");
+    const countEl = document.getElementById("suctionCount");
+    const scatterBtn = document.getElementById("scatterBtn");
+    if (!stage || !canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let cw = 0, ch = 0, cx = 0, cy = 0, inletR = 0;
+    let particles = [];
+    let count = 0;
+    let raf = null;
+    let pulse = 0;
+
+    function rand(a, b) {
+      return a + Math.random() * (b - a);
+    }
+
+    function spawnDust(x, y) {
+      particles.push({ type: "dust", x, y, vx: 0, vy: 0, r: rand(2, 4), shade: rand(90, 150) | 0 });
+    }
+    function spawnHair(x, y) {
+      particles.push({ type: "hair", x, y, vx: 0, vy: 0, len: rand(14, 26), ang: rand(0, Math.PI * 2) });
+    }
+    function spawnRandom(x, y) {
+      if (Math.random() < 0.35) spawnHair(x, y);
+      else spawnDust(x, y);
+    }
+    function seedParticles(n) {
+      for (let i = 0; i < n; i++) {
+        const ang = rand(0, Math.PI * 2);
+        const dist = rand(inletR * 2, Math.min(cw, ch) * 0.46);
+        spawnRandom(cx + Math.cos(ang) * dist, cy + Math.sin(ang) * dist);
+      }
+    }
+
+    function size() {
+      const rect = stage.getBoundingClientRect();
+      cw = rect.width;
+      ch = rect.height;
+      canvas.width = Math.round(cw * dpr);
+      canvas.height = Math.round(ch * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cx = cw / 2;
+      cy = ch / 2;
+      inletR = Math.min(cw, ch) * 0.16;
+      particles = [];
+      seedParticles(14);
+      renderStatic();
+    }
+
+    function drawInlet() {
+      const g = ctx.createRadialGradient(cx, cy, inletR * 0.15, cx, cy, inletR * (1.15 + pulse * 0.15));
+      g.addColorStop(0, "#11151b");
+      g.addColorStop(1, "#1c222b");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(cx, cy, inletR * (1 + pulse * 0.12), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "rgba(14,165,233,0.55)";
+      ctx.lineWidth = 2;
+      const rim = inletR * 0.7;
+      for (let i = 0; i < 14; i++) {
+        const a = (i / 14) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(a) * rim, cy + Math.sin(a) * rim);
+        ctx.lineTo(cx + Math.cos(a) * (rim - 8), cy + Math.sin(a) * (rim - 8));
+        ctx.stroke();
+      }
+      ctx.fillStyle = "#0ea5e9";
+      ctx.beginPath();
+      ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawParticle(p, shrink) {
+      if (p.type === "dust") {
+        ctx.fillStyle = `rgb(${p.shade},${p.shade - 10},${p.shade - 25})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * shrink, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = "rgba(60,45,35,0.8)";
+        ctx.lineWidth = 1.4 * shrink;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x + Math.cos(p.ang) * p.len, p.y + Math.sin(p.ang) * p.len);
+        ctx.stroke();
+      }
+    }
+
+    function renderStatic() {
+      ctx.clearRect(0, 0, cw, ch);
+      drawInlet();
+      particles.forEach((p) => drawParticle(p, 1));
+    }
+
+    function step() {
+      ctx.clearRect(0, 0, cw, ch);
+      drawInlet();
+      pulse = Math.max(0, pulse - 0.04);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        const dx = cx - p.x, dy = cy - p.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        p.vx = (p.vx + (dx / dist) * (0.15 + 40 / dist)) * 0.94;
+        p.vy = (p.vy + (dy / dist) * (0.15 + 40 / dist)) * 0.94;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (dist < inletR * 0.6) {
+          particles.splice(i, 1);
+          count++;
+          pulse = 1;
+          if (countEl) countEl.textContent = String(count);
+          continue;
+        }
+        const shrink = Math.max(0.25, Math.min(1, (dist - inletR * 0.6) / (inletR * 3)));
+        drawParticle(p, shrink);
+      }
+
+      if (particles.length < 26 && Math.random() < 0.03) {
+        const ang = rand(0, Math.PI * 2);
+        const dist = rand(inletR * 2.4, Math.min(cw, ch) * 0.46);
+        spawnRandom(cx + Math.cos(ang) * dist, cy + Math.sin(ang) * dist);
+      }
+      raf = requestAnimationFrame(step);
+    }
+
+    function pointerToLocal(evt) {
+      const rect = stage.getBoundingClientRect();
+      return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+    }
+
+    function scatterAt(x, y, n) {
+      for (let i = 0; i < n; i++) {
+        spawnRandom(x + rand(-30, 30), y + rand(-30, 30));
+      }
+    }
+
+    function bumpCount(n) {
+      count += n;
+      if (countEl) countEl.textContent = String(count);
+    }
+
+    stage.addEventListener("click", (evt) => {
+      const { x, y } = pointerToLocal(evt);
+      if (reducedMotion()) {
+        bumpCount(4);
+        return;
+      }
+      scatterAt(x, y, 5);
+    });
+
+    scatterBtn?.addEventListener("click", () => {
+      if (reducedMotion()) {
+        bumpCount(10);
+        return;
+      }
+      scatterAt(cx + rand(-cw * 0.3, cw * 0.3), cy + rand(-ch * 0.3, ch * 0.3), 10);
+    });
+
+    let resizeTimer = null;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(size, 150);
+    });
+
+    size();
+    if (!reducedMotion()) raf = requestAnimationFrame(step);
+  })();
+
   /* ===== Cleaning mode mini demos ===== */
   (function initModeCanvases() {
     const canvases = document.querySelectorAll(".mode-canvas");
