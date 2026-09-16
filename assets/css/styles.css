@@ -276,7 +276,28 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 
 /* ===== Beautiful-at-home section ===== */
 .beautiful-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
-.beautiful-visual { display: flex; justify-content: center; }
+.beautiful-visual { position: relative; display: flex; justify-content: center; }
+
+/* ===== Floating product photos (real cutouts, no background) ===== */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-14px) rotate(1.2deg); }
+}
+.section-photo {
+  display: block; margin: 0 auto 36px;
+  filter: drop-shadow(0 20px 26px rgba(15, 23, 42, 0.16));
+  animation: floatSlow 7s ease-in-out infinite;
+}
+.section-photo.side { width: min(280px, 70%); }
+.section-photo.mist { width: min(220px, 60%); }
+
+.detail-badge {
+  position: absolute; top: -10%; right: -10%; width: 136px;
+  filter: drop-shadow(0 14px 18px rgba(15, 23, 42, 0.2));
+  animation: floatSlow 6s ease-in-out infinite; animation-delay: 0.5s;
+  pointer-events: none;
+}
+.detail-badge img { width: 100%; display: block; }
 .beautiful-card { padding: 0; width: 100%; max-width: 480px; overflow: hidden; aspect-ratio: 4 / 3; }
 .beautiful-photo { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; }
 .beautiful-copy h2 { margin-bottom: 14px; }
