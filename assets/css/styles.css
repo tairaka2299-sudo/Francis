@@ -289,7 +289,7 @@ button { font: inherit; color: inherit; background: none; border: 0; }
   animation: floatSlow 7s ease-in-out infinite;
 }
 .section-photo.side { width: min(280px, 70%); }
-.section-photo.mist { width: min(220px, 60%); }
+.section-photo.mist { width: min(400px, 90%); }
 
 .detail-badge {
   position: absolute; top: -10%; right: -10%; width: 136px;
