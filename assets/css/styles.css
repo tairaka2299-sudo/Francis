@@ -187,17 +187,19 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 .hero-stats dt { font-size: 0.8rem; color: var(--text-faint); margin-bottom: 6px; }
 .hero-stats dd { font-size: 1.2rem; font-weight: 700; margin: 0; }
 
-.hero-visual { position: relative; aspect-ratio: 1 / 1; max-width: 460px; justify-self: center; width: 100%; }
+.hero-visual { position: relative; aspect-ratio: 3 / 4; max-width: 400px; justify-self: center; width: 100%; }
 .hero-card {
   position: relative; inset: 0; width: 100%; height: 100%;
   border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center;
-  padding: 14%; overflow: hidden;
+  overflow: hidden;
 }
+.hero-photo { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block; }
 .radar-sweep {
   position: absolute; inset: 8%; border-radius: 50%;
   background: conic-gradient(from 0deg, rgba(14, 165, 233, 0.3), transparent 28%);
   animation: spin 5s linear infinite;
   mix-blend-mode: multiply;
+  pointer-events: none;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .vacuum-illustration { position: relative; z-index: 1; }
@@ -211,6 +213,19 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 .chip-2 { bottom: 14%; left: -8%; animation-delay: 1.2s; }
 .chip-3 { bottom: -4%; right: 14%; animation-delay: 2.4s; }
 @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+.chip-photo {
+  position: absolute; top: -8%; left: -10%; width: 104px; height: 104px;
+  border-radius: 50%; padding: 4px; background: var(--surface);
+  border: 1px solid var(--border); box-shadow: var(--shadow-glass);
+  animation: float 7s ease-in-out infinite; animation-delay: 0.6s;
+}
+.chip-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; border-radius: 50%; display: block; }
+.chip-photo-label {
+  position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: var(--accent-ink); font-size: 0.68rem; font-weight: 700;
+  padding: 2px 9px; border-radius: 999px; white-space: nowrap;
+}
 
 .scroll-cue {
   position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
@@ -246,12 +261,11 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 }
 .clean-floor {
   position: absolute; inset: 0;
-  background:
-    repeating-linear-gradient(90deg, rgba(15,23,42,0.05) 0 2px, transparent 2px 64px),
-    linear-gradient(160deg, #eafaf4 0%, #e3f4fb 55%, #eef9f6 100%);
+  background-image: url("../img/living-room.jpeg");
+  background-size: cover;
+  background-position: center 38%;
 }
 #dustCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.room-frame { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .cursor-bot {
   position: absolute; width: 40px; height: 40px; top: 0; left: 0;
   transform: translate(-100px, -100px);
@@ -262,7 +276,8 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 /* ===== Beautiful-at-home section ===== */
 .beautiful-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
 .beautiful-visual { display: flex; justify-content: center; }
-.beautiful-card { padding: 14px; width: 100%; max-width: 480px; overflow: hidden; }
+.beautiful-card { padding: 0; width: 100%; max-width: 480px; overflow: hidden; aspect-ratio: 4 / 3; }
+.beautiful-photo { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; }
 .beautiful-copy h2 { margin-bottom: 14px; }
 .beautiful-copy p { color: var(--text-muted); max-width: 46ch; }
 .callout-label { font-size: 12px; fill: var(--text-muted); font-family: "Rubik", sans-serif; }

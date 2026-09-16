@@ -438,7 +438,7 @@
       cy = ch / 2;
       inletR = Math.min(cw, ch) * 0.16;
       particles = [];
-      seedParticles(24);
+      seedParticles(42);
       renderStatic();
     }
 
@@ -552,7 +552,7 @@
         drawParticle(p, shrink);
       }
 
-      if (particles.length < 40 && Math.random() < 0.05) {
+      if (particles.length < 70 && Math.random() < 0.08) {
         const ang = rand(0, Math.PI * 2);
         const dist = rand(inletR * 2.4, Math.min(cw, ch) * 0.46);
         spawnRandom(cx + Math.cos(ang) * dist, cy + Math.sin(ang) * dist);
@@ -579,18 +579,18 @@
     stage.addEventListener("click", (evt) => {
       const { x, y } = pointerToLocal(evt);
       if (reducedMotion()) {
-        bumpCount(4);
+        bumpCount(8);
         return;
       }
-      scatterAt(x, y, 5);
+      scatterAt(x, y, 10);
     });
 
     scatterBtn?.addEventListener("click", () => {
       if (reducedMotion()) {
-        bumpCount(10);
+        bumpCount(20);
         return;
       }
-      scatterAt(cx + rand(-cw * 0.3, cw * 0.3), cy + rand(-ch * 0.3, ch * 0.3), 10);
+      scatterAt(cx + rand(-cw * 0.3, cw * 0.3), cy + rand(-ch * 0.3, ch * 0.3), 22);
     });
 
     let resizeTimer = null;
