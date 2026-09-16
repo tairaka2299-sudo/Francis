@@ -191,9 +191,9 @@ button { font: inherit; color: inherit; background: none; border: 0; }
 .hero-card {
   position: relative; inset: 0; width: 100%; height: 100%;
   border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
+  overflow: hidden; padding: 12%;
 }
-.hero-photo { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block; }
+.hero-photo { width: 100%; height: 100%; object-fit: contain; display: block; position: relative; z-index: 1; }
 .radar-sweep {
   position: absolute; inset: 8%; border-radius: 50%;
   background: conic-gradient(from 0deg, rgba(14, 165, 233, 0.3), transparent 28%);
@@ -202,7 +202,6 @@ button { font: inherit; color: inherit; background: none; border: 0; }
   pointer-events: none;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.vacuum-illustration { position: relative; z-index: 1; }
 
 .floating-chip {
   position: absolute; padding: 10px 16px; border-radius: 999px;
@@ -220,20 +219,18 @@ button { font: inherit; color: inherit; background: none; border: 0; }
   border: 1px solid var(--border); box-shadow: var(--shadow-glass);
   animation: float 7s ease-in-out infinite; animation-delay: 0.6s;
   overflow: hidden; cursor: pointer; pointer-events: auto;
+  transition: transform 0.35s ease, z-index 0s;
+  transform-origin: 30% 20%;
 }
 .chip-photo img {
   width: 100%; height: 100%; object-fit: cover; object-position: center 15%;
   border-radius: 50%; display: block;
-  transition: transform 0.35s ease;
 }
-.chip-photo:hover img, .chip-photo:focus-within img { transform: scale(1.6); }
-.hero-float-photo {
-  position: absolute; bottom: -16%; right: -4%; width: 168px;
-  filter: drop-shadow(0 20px 26px rgba(15, 23, 42, 0.18));
-  animation: floatSlow 7.5s ease-in-out infinite; animation-delay: 1s;
-  pointer-events: none;
+.chip-photo:hover, .chip-photo:focus-within {
+  transform: scale(1.7) !important;
+  animation-play-state: paused;
+  z-index: 10;
 }
-.hero-float-photo img { width: 100%; display: block; }
 .chip-photo-label {
   position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
   background: var(--accent); color: var(--accent-ink); font-size: 0.68rem; font-weight: 700;
@@ -315,7 +312,11 @@ button { font: inherit; color: inherit; background: none; border: 0; }
   padding: 32px; width: 100%; max-width: 480px; overflow: hidden; aspect-ratio: 4 / 3;
   display: flex; align-items: center; justify-content: center;
 }
-.beautiful-photo { width: 100%; height: 100%; object-fit: contain; display: block; }
+.beautiful-photo {
+  width: 100%; height: 100%; object-fit: contain; display: block;
+  animation: floatSlow 6.5s ease-in-out infinite;
+  filter: drop-shadow(0 16px 20px rgba(15, 23, 42, 0.16));
+}
 .beautiful-copy h2 { margin-bottom: 14px; }
 .beautiful-copy p { color: var(--text-muted); max-width: 46ch; }
 .callout-label { font-size: 12px; fill: var(--text-muted); font-family: "Rubik", sans-serif; }
