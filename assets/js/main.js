@@ -77,8 +77,8 @@
     function paintDust() {
       ctx.globalCompositeOperation = "source-over";
       const grad = ctx.createLinearGradient(0, 0, cw, ch);
-      grad.addColorStop(0, "#3c3626");
-      grad.addColorStop(1, "#28241c");
+      grad.addColorStop(0, "#d7cfba");
+      grad.addColorStop(1, "#c2b9a1");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, cw, ch);
 
@@ -87,8 +87,8 @@
         const x = Math.random() * cw;
         const y = Math.random() * ch;
         const r = Math.random() * 1.6 + 0.3;
-        const shade = 150 + Math.random() * 60;
-        ctx.fillStyle = `rgba(${shade | 0}, ${shade | 0}, ${(shade - 20) | 0}, ${0.12 + Math.random() * 0.2})`;
+        const shade = 90 + Math.random() * 50;
+        ctx.fillStyle = `rgba(${shade | 0}, ${(shade - 12) | 0}, ${(shade - 28) | 0}, ${0.14 + Math.random() * 0.22})`;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
@@ -100,8 +100,8 @@
         const y = Math.random() * ch;
         const r = 18 + Math.random() * 30;
         const g = ctx.createRadialGradient(x, y, 0, x, y, r);
-        g.addColorStop(0, "rgba(90,80,60,0.35)");
-        g.addColorStop(1, "rgba(90,80,60,0)");
+        g.addColorStop(0, "rgba(120,108,84,0.3)");
+        g.addColorStop(1, "rgba(120,108,84,0)");
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -430,26 +430,26 @@
 
       function drawBackground(clearAll) {
         if (clearAll) {
-          ctx.fillStyle = "#0c1526";
+          ctx.fillStyle = "#eef6f4";
           ctx.fillRect(0, 0, w, h);
         } else {
-          ctx.fillStyle = "rgba(12,21,38,0.14)";
+          ctx.fillStyle = "rgba(238,246,244,0.2)";
           ctx.fillRect(0, 0, w, h);
         }
-        ctx.strokeStyle = "rgba(255,255,255,0.08)";
+        ctx.strokeStyle = "rgba(15,23,42,0.1)";
         ctx.lineWidth = 1;
         ctx.strokeRect(8, 8, w - 16, h - 16);
       }
 
       function drawDot(x, y) {
         const g = ctx.createRadialGradient(x, y, 0, x, y, 9);
-        g.addColorStop(0, "rgba(34,211,238,0.9)");
-        g.addColorStop(1, "rgba(34,211,238,0)");
+        g.addColorStop(0, "rgba(14,165,233,0.9)");
+        g.addColorStop(1, "rgba(14,165,233,0)");
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(x, y, 9, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = "#22d3ee";
+        ctx.fillStyle = "#0ea5e9";
         ctx.beginPath();
         ctx.arc(x, y, 3.2, 0, Math.PI * 2);
         ctx.fill();
