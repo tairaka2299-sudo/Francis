@@ -393,14 +393,30 @@
       return a + Math.random() * (b - a);
     }
 
+    const crumbHues = [
+      [166, 108, 58],
+      [201, 148, 72],
+      [138, 93, 56],
+      [214, 178, 92],
+    ];
+
     function spawnDust(x, y) {
       particles.push({ type: "dust", x, y, vx: 0, vy: 0, r: rand(2, 4), shade: rand(90, 150) | 0 });
     }
     function spawnHair(x, y) {
       particles.push({ type: "hair", x, y, vx: 0, vy: 0, len: rand(14, 26), ang: rand(0, Math.PI * 2) });
     }
+    function spawnCrumb(x, y) {
+      particles.push({
+        type: "crumb", x, y, vx: 0, vy: 0,
+        r: rand(2.5, 5), rot: rand(0, Math.PI * 2),
+        hue: crumbHues[(Math.random() * crumbHues.length) | 0],
+      });
+    }
     function spawnRandom(x, y) {
-      if (Math.random() < 0.35) spawnHair(x, y);
+      const r = Math.random();
+      if (r < 0.32) spawnHair(x, y);
+      else if (r < 0.6) spawnCrumb(x, y);
       else spawnDust(x, y);
     }
     function seedParticles(n) {
@@ -422,18 +438,39 @@
       cy = ch / 2;
       inletR = Math.min(cw, ch) * 0.16;
       particles = [];
-      seedParticles(14);
+      seedParticles(24);
       renderStatic();
     }
 
     function drawInlet() {
-      const g = ctx.createRadialGradient(cx, cy, inletR * 0.15, cx, cy, inletR * (1.15 + pulse * 0.15));
-      g.addColorStop(0, "#11151b");
-      g.addColorStop(1, "#1c222b");
+      const outerR = inletR * (1 + pulse * 0.12);
+      // cast shadow grounding the housing
+      const shadow = ctx.createRadialGradient(cx, cy + outerR * 0.55, outerR * 0.2, cx, cy + outerR * 0.55, outerR * 1.15);
+      shadow.addColorStop(0, "rgba(15,23,42,0.28)");
+      shadow.addColorStop(1, "rgba(15,23,42,0)");
+      ctx.fillStyle = shadow;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + outerR * 0.55, outerR * 1.15, outerR * 0.4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // recessed opening: dark core with a lit rim (ambient occlusion look)
+      const g = ctx.createRadialGradient(cx, cy, outerR * 0.1, cx, cy, outerR);
+      g.addColorStop(0, "#05070b");
+      g.addColorStop(0.55, "#11151b");
+      g.addColorStop(0.86, "#232b38");
+      g.addColorStop(1, "#0c1017");
       ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.arc(cx, cy, inletR * (1 + pulse * 0.12), 0, Math.PI * 2);
+      ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
       ctx.fill();
+
+      // studio key-light highlight on the rim, upper-left
+      ctx.strokeStyle = "rgba(255,255,255,0.22)";
+      ctx.lineWidth = outerR * 0.1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR * 0.94, Math.PI * 1.05, Math.PI * 1.55);
+      ctx.stroke();
+
       ctx.strokeStyle = "rgba(14,165,233,0.55)";
       ctx.lineWidth = 2;
       const rim = inletR * 0.7;
@@ -444,7 +481,10 @@
         ctx.lineTo(cx + Math.cos(a) * (rim - 8), cy + Math.sin(a) * (rim - 8));
         ctx.stroke();
       }
-      ctx.fillStyle = "#0ea5e9";
+      const dot = ctx.createRadialGradient(cx - 1, cy - 1, 0, cx, cy, 5);
+      dot.addColorStop(0, "#7dd3fc");
+      dot.addColorStop(1, "#0ea5e9");
+      ctx.fillStyle = dot;
       ctx.beginPath();
       ctx.arc(cx, cy, 4, 0, Math.PI * 2);
       ctx.fill();
@@ -456,6 +496,21 @@
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r * shrink, 0, Math.PI * 2);
         ctx.fill();
+      } else if (p.type === "crumb") {
+        const [r, g, b] = p.hue;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = `rgb(${r},${g},${b})`;
+        const s = p.r * shrink;
+        ctx.beginPath();
+        ctx.moveTo(-s, -s * 0.7);
+        ctx.lineTo(s, -s * 0.4);
+        ctx.lineTo(s * 0.6, s);
+        ctx.lineTo(-s * 0.8, s * 0.6);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
       } else {
         ctx.strokeStyle = "rgba(60,45,35,0.8)";
         ctx.lineWidth = 1.4 * shrink;
@@ -497,7 +552,7 @@
         drawParticle(p, shrink);
       }
 
-      if (particles.length < 26 && Math.random() < 0.03) {
+      if (particles.length < 40 && Math.random() < 0.05) {
         const ang = rand(0, Math.PI * 2);
         const dist = rand(inletR * 2.4, Math.min(cw, ch) * 0.46);
         spawnRandom(cx + Math.cos(ang) * dist, cy + Math.sin(ang) * dist);
